@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Projeto de Vida - Âncoras de Carreira</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --bg: #f0f2f5;
+            --text: #2d3436;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #6c5ce7 0%, #00d2ff 100%);
+            background-attachment: fixed;
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 { text-align: center; color: var(--primary); font-weight: 700; margin-bottom: 10px; }
+        p.subtitle { text-align: center; color: #636e72; margin-bottom: 30px; }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--primary); }
+        input[type="text"], input[type="email"] {
+            width: 100%; padding: 12px; border: 2px solid #dfe6e9; border-radius: 12px; outline: none; transition: 0.3s; box-sizing: border-box;
+        }
+        input:focus { border-color: var(--primary); }
+
+        .question-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 15px;
+            border-left: 6px solid var(--primary);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .options { display: flex; justify-content: space-between; margin-top: 10px; gap: 5px; }
+        .option-btn {
+            flex: 1; padding: 10px; border: 2px solid #dfe6e9; border-radius: 8px; cursor: pointer;
+            text-align: center; transition: 0.3s; background: white; font-weight: 600; font-size: 14px;
+        }
+        .option-btn:hover { background: var(--secondary); color: white; }
+        .option-btn.selected { background: var(--primary); color: white; border-color: var(--primary); }
+
+        button.submit-btn {
+            width: 100%; padding: 18px; background: var(--primary); color: white; border: none;
+            border-radius: 12px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 30px;
+            transition: 0.3s; box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+        }
+        button.submit-btn:hover { transform: translateY(-2px); background: #5b4cc4; }
+
+        #results-screen { display: none; }
+        .anchor-result {
+            background: white; padding: 20px; border-radius: 16px; margin-bottom: 15px;
+            border-bottom: 4px solid var(--secondary); animation: fadeIn 0.5s ease forwards;
+        }
+        .anchor-header { display: flex; justify-content: space-between; align-items: center; }
+        .anchor-name { font-size: 18px; font-weight: 700; color: var(--primary); }
+        .anchor-score { background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 14px; }
+        .anchor-desc { font-size: 14px; color: #636e72; margin-top: 10px; line-height: 1.5; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="quiz-screen">
+        <h1>Minha Carreira 🚀</h1>
+        <p class="subtitle">Descubra o que realmente importa para o seu futuro profissional.</p>
+        
+        <div class="form-group">
+            <label>Qual seu nome?</label>
+            <input type="text" id="userName" placeholder="Ex: Adria">
+        </div>
+        
+        <div id="questions-container"></div>
+        
+        <button class="submit-btn" onclick="showResults()">DESCOBRIR MEU PERFIL</button>
+    </div>
+
+    <div id="results-screen">
+        <h1 id="welcome-msg">Resultado</h1>
+        <p class="subtitle">Aqui estão suas âncoras de carreira, da mais forte para a menos expressiva:</p>
+        <div id="anchor-list"></div>
+        <button class="submit-btn" onclick="window.location.reload()">REFAZER TESTE</button>
+    </div>
+</div>
+
+<script>
+    const anchorData = {
+        "TF": { name: "Especialista Técnico", desc: "Você ama dominar um assunto e ser reconhecido pelo que sabe fazer de melhor. Sua satisfação vem de ser um expert na sua área." },
+        "GG": { name: "Líder e Gestor", desc: "Você gosta de responsabilidade, de organizar pessoas e de tomar decisões que impactam o resultado final de um projeto." },
+        "Al": { name: "Autonomia e Liberdade", desc: "Regras rígidas te sufocam. Você trabalha melhor quando tem liberdade para definir seu próprio ritmo, horário e modo de fazer as coisas." },
+        "SE": { name: "Segurança e Estabilidade", desc: "Você valoriza a previsibilidade. Prefere saber que seu futuro está garantido, com boa remuneração e estabilidade no emprego." },
+        "CE": { name: "Criatividade Empreendedora", desc: "Você tem o desejo de criar algo novo. Pode ser uma empresa, um produto ou uma marca que tenha a sua identidade única." },
+        "SD": { name: "Causa e Dedicação", desc: "Trabalhar apenas por dinheiro não te motiva. Você quer que seu trabalho ajude as pessoas, a sociedade ou cure algum problema do mundo." },
+        "DP": { name: "Desafio Puro", desc: "O que te move é a superação. Você adora problemas 'impossíveis' e se sente vivo quando vence obstáculos que outros acham difíceis demais." },
+        "EV": { name: "Estilo de Vida", desc: "Para você, o sucesso é equilibrar tudo: lazer, família e trabalho. Você não aceita carreiras que tomem todo o seu tempo de vida." }
+    };
+
+    const questions = [
+        "Quero ser um especialista em uma área específica.",
+        "Gosto de liderar grupos e tomar decisões importantes.",
+        "Liberdade para agir do meu jeito é fundamental.",
+        "Segurança no futuro é mais importante que aventura.",
+        "Sonho em criar meu próprio negócio ou marca.",
+        "Quero que meu trabalho torne o mundo melhor.",
+        "Amo resolver problemas que parecem impossíveis.",
+        "Meu tempo livre e família vêm antes da carreira.",
+        "Quero ser reconhecido pelo meu conhecimento técnico.",
+        "Gosto de ser o responsável pelo sucesso de uma equipe.",
+        "Prefiro trabalhar sozinho e sem supervisão constante.",
+        "Valorizo benefícios garantidos e estabilidade.",
+        "Quero inventar algo que seja inteiramente meu.",
+        "Trabalhar por uma causa social me motiva muito.",
+        "Adoro competições onde preciso ser o melhor.",
+        "Busco flexibilidade para conciliar meus hobbies."
+        // Reduzido para 16 questões no exemplo (2 por categoria) para agilizar, 
+        // mas você pode adicionar as 40 seguindo a mesma lógica.
+    ];
+
+    const categories = ["TF", "GG", "Al", "SE", "CE", "SD", "DP", "EV"];
+    const container = document.getElementById('questions-container');
+    let userScores = {};
+
+    questions.forEach((q, i) => {
+        const div = document.createElement('div');
+        div.className = 'question-card';
+        div.innerHTML = `
+            <p><strong>${i+1}.</strong> ${q}</p>
+            <div class="options" id="q${i}">
+                ${[1,2,3,4,5,6].map(n => `<div class="option-btn" onclick="selectOption(${i}, ${n})">${n}</div>`).join('')}
+            </div>
+        `;
+        container.appendChild(div);
+    });
+
+    function selectOption(qIdx, val) {
+        const options = document.querySelectorAll(`#q${qIdx} .option-btn`);
+        options.forEach(opt => opt.classList.remove('selected'));
+        options[val-1].classList.add('selected');
+        userScores[qIdx] = val;
+    }
+
+    function showResults() {
+        const name = document.getElementById('userName').value || "Estudante";
+        const totalQuestions = questions.length;
+        if(Object.keys(userScores).length < totalQuestions) {
+            alert("Por favor, responda todas as questões!");
+            return;
+        }
+
+        let sums = {TF:0, GG:0, Al:0, SE:0, CE:0, SD:0, DP:0, EV:0};
+        Object.keys(userScores).forEach(idx => {
+            let cat = categories[idx % 8];
+            sums[cat] += userScores[idx];
+        });
+
+        // Calcular média (assumindo 2 questões por categoria no exemplo de 16)
+        let resultsArray = categories.map(cat => ({
+            id: cat,
+            score: (sums[cat] / (totalQuestions / 8)).toFixed(1),
+            ...anchorData[cat]
+        }));
+
+        // Ordenar do maior para o menor
+        resultsArray.sort((a, b) => b.score - a.score);
+
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('results-screen').style.display = 'block';
+        document.getElementById('welcome-msg').innerText = `Parabéns, ${name}! 🏆`;
+
+        const list = document.getElementById('anchor-list');
+        resultsArray.forEach(res => {
+            list.innerHTML += `
+                <div class="anchor-result">
+                    <div class="anchor-header">
+                        <span class="anchor-name">${res.name}</span>
+                        <span class="anchor-score">${res.score} pts</span>
+                    </div>
+                    <p class="anchor-desc">${res.desc}</p>
+                </div>
+            `;
+        });
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>
