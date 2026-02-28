@@ -26,24 +26,25 @@
         }
 
         .container {
-            max-width: 700px;
+            max-width: 800px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             padding: 40px;
             border-radius: 24px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
-        h1 { text-align: center; color: var(--primary); font-weight: 700; margin-bottom: 10px; }
-        p.subtitle { text-align: center; color: #636e72; margin-bottom: 30px; }
+        h1 { text-align: center; color: var(--primary); font-weight: 700; margin-bottom: 5px; }
+        p.subtitle { text-align: center; color: #636e72; margin-bottom: 30px; font-size: 0.9rem; }
 
-        .form-group { margin-bottom: 20px; }
+        .intro-box { background: #e8f4fd; padding: 15px; border-radius: 12px; margin-bottom: 25px; border-left: 5px solid var(--primary); font-size: 0.85rem; }
+
+        .form-group { margin-bottom: 25px; }
         label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--primary); }
-        input[type="text"], input[type="email"] {
-            width: 100%; padding: 12px; border: 2px solid #dfe6e9; border-radius: 12px; outline: none; transition: 0.3s; box-sizing: border-box;
+        input[type="text"] {
+            width: 100%; padding: 12px; border: 2px solid #dfe6e9; border-radius: 12px; outline: none; box-sizing: border-box;
         }
-        input:focus { border-color: var(--primary); }
 
         .question-card {
             background: var(--white);
@@ -54,20 +55,19 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
-        .options { display: flex; justify-content: space-between; margin-top: 10px; gap: 5px; }
+        .options { display: flex; justify-content: space-between; margin-top: 10px; gap: 5px; flex-wrap: wrap; }
         .option-btn {
-            flex: 1; padding: 10px; border: 2px solid #dfe6e9; border-radius: 8px; cursor: pointer;
-            text-align: center; transition: 0.3s; background: white; font-weight: 600; font-size: 14px;
+            flex: 1; min-width: 40px; padding: 10px; border: 2px solid #dfe6e9; border-radius: 8px; cursor: pointer;
+            text-align: center; transition: 0.3s; background: white; font-weight: 600;
         }
-        .option-btn:hover { background: var(--secondary); color: white; }
         .option-btn.selected { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .top3-section { background: #fff3cd; padding: 20px; border-radius: 16px; margin: 30px 0; border: 2px dashed #ffc107; }
 
         button.submit-btn {
             width: 100%; padding: 18px; background: var(--primary); color: white; border: none;
-            border-radius: 12px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 30px;
-            transition: 0.3s; box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+            border-radius: 12px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 20px;
         }
-        button.submit-btn:hover { transform: translateY(-2px); background: #5b4cc4; }
 
         #results-screen { display: none; }
         .anchor-result {
@@ -75,9 +75,9 @@
             border-bottom: 4px solid var(--secondary); animation: fadeIn 0.5s ease forwards;
         }
         .anchor-header { display: flex; justify-content: space-between; align-items: center; }
-        .anchor-name { font-size: 18px; font-weight: 700; color: var(--primary); }
-        .anchor-score { background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 14px; }
-        .anchor-desc { font-size: 14px; color: #636e72; margin-top: 10px; line-height: 1.5; }
+        .anchor-name { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+        .anchor-score { background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.9rem; }
+        .anchor-desc { font-size: 0.9rem; color: #636e72; margin-top: 10px; line-height: 1.5; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -86,126 +86,142 @@
 
 <div class="container">
     <div id="quiz-screen">
-        <h1>Minha Carreira 🚀</h1>
-        <p class="subtitle">Descubra o que realmente importa para o seu futuro profissional.</p>
+        <h1>Âncoras de Carreira ⚓</h1>
+        <p class="subtitle">Descubra seus valores e o que te move profissionalmente.</p>
         
+        <div class="intro-box">
+            <strong>Instruções:</strong> Para cada frase, dê uma nota de <strong>1 (nada a ver comigo)</strong> a <strong>6 (tudo a ver comigo)</strong>. No final, você escolherá os 3 itens mais importantes para você.
+        </div>
+
         <div class="form-group">
-            <label>Qual seu nome?</label>
-            <input type="text" id="userName" placeholder="Ex: Adria">
+            <label>Seu Nome:</label>
+            <input type="text" id="userName" placeholder="Digite seu nome aqui...">
         </div>
         
         <div id="questions-container"></div>
+
+        <div class="top3-section">
+            <h3>Etapa Final: Suas Prioridades</h3>
+            <p>Escolha o número das <strong>3 questões</strong> que você deu as notas mais altas e que são as mais importantes para você (isso adiciona pontos extras no cálculo final):</p>
+            <div style="display:flex; gap:10px;">
+                <input type="number" id="top1" placeholder="Nº Questão" style="width:33%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                <input type="number" id="top2" placeholder="Nº Questão" style="width:33%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                <input type="number" id="top3" placeholder="Nº Questão" style="width:33%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+            </div>
+        </div>
         
-        <button class="submit-btn" onclick="showResults()">DESCOBRIR MEU PERFIL</button>
+        <button class="submit-btn" onclick="showResults()">VER MEU RESULTADO FINAL</button>
     </div>
 
     <div id="results-screen">
-        <h1 id="welcome-msg">Resultado</h1>
-        <p class="subtitle">Aqui estão suas âncoras de carreira, da mais forte para a menos expressiva:</p>
+        <h1 id="welcome-msg">Seu Perfil Profissional</h1>
+        <p class="subtitle">Estas são as suas âncoras ordenadas por afinidade:</p>
         <div id="anchor-list"></div>
         <button class="submit-btn" onclick="window.location.reload()">REFAZER TESTE</button>
     </div>
 </div>
 
 <script>
-    const anchorData = {
-        "TF": { name: "Especialista Técnico", desc: "Você ama dominar um assunto e ser reconhecido pelo que sabe fazer de melhor. Sua satisfação vem de ser um expert na sua área." },
-        "GG": { name: "Líder e Gestor", desc: "Você gosta de responsabilidade, de organizar pessoas e de tomar decisões que impactam o resultado final de um projeto." },
-        "Al": { name: "Autonomia e Liberdade", desc: "Regras rígidas te sufocam. Você trabalha melhor quando tem liberdade para definir seu próprio ritmo, horário e modo de fazer as coisas." },
-        "SE": { name: "Segurança e Estabilidade", desc: "Você valoriza a previsibilidade. Prefere saber que seu futuro está garantido, com boa remuneração e estabilidade no emprego." },
-        "CE": { name: "Criatividade Empreendedora", desc: "Você tem o desejo de criar algo novo. Pode ser uma empresa, um produto ou uma marca que tenha a sua identidade única." },
-        "SD": { name: "Causa e Dedicação", desc: "Trabalhar apenas por dinheiro não te motiva. Você quer que seu trabalho ajude as pessoas, a sociedade ou cure algum problema do mundo." },
-        "DP": { name: "Desafio Puro", desc: "O que te move é a superação. Você adora problemas 'impossíveis' e se sente vivo quando vence obstáculos que outros acham difíceis demais." },
-        "EV": { name: "Estilo de Vida", desc: "Para você, o sucesso é equilibrar tudo: lazer, família e trabalho. Você não aceita carreiras que tomem todo o seu tempo de vida." }
+    const anchorInfo = {
+        "TF": { name: "Competência Técnica/Funcional", desc: "Você busca ser o melhor especialista na sua área. Sente-se realizado ao ser procurado pelo seu saber técnico e detesta ser promovido para cargos puramente administrativos que te afastem da prática." },
+        "GG": { name: "Gerência Geral", desc: "Seu foco é liderar, integrar esforços e ser responsável pelos resultados finais. Você quer subir na hierarquia e ter visão sistêmica da organização." },
+        "Al": { name: "Autonomia e Independência", desc: "Você precisa de liberdade. Prefere trabalhar do seu jeito, definindo seus próprios horários e métodos, longe de regras rígidas e supervisão constante." },
+        "SE": { name: "Segurança e Estabilidade", desc: "Prioriza a tranquilidade financeira e a permanência no emprego. Você valoriza planos de carreira claros e benefícios que garantam o seu futuro e o da sua família." },
+        "CE": { name: "Criatividade Empreendedora", desc: "Você tem o desejo de criar algo novo, seja um negócio ou um produto. Precisa de autonomia para provar ao mundo que suas ideias funcionam e geram valor." },
+        "SD": { name: "Serviço e Dedicação a uma Causa", desc: "Trabalha por valores. Quer que seu esforço contribua para o bem da sociedade ou para uma causa que você acredita ser correta, independentemente do cargo." },
+        "DP": { name: "Desafio Puro", desc: "Você se move por problemas 'insolúveis' e obstáculos difíceis. A monotonia é sua inimiga; você se sente vivo ao vencer desafios que outros consideram impossíveis." },
+        "EV": { name: "Estilo de Vida", desc: "Busca o equilíbrio total. Não aceita que a carreira destrua sua vida pessoal ou familiar. Flexibilidade é a palavra-chave para integrar todos os setores da sua vida." }
     };
 
     const questions = [
-        "Quero ser um especialista em uma área específica.",
-        "Gosto de liderar grupos e tomar decisões importantes.",
-        "Liberdade para agir do meu jeito é fundamental.",
-        "Segurança no futuro é mais importante que aventura.",
-        "Sonho em criar meu próprio negócio ou marca.",
-        "Quero que meu trabalho torne o mundo melhor.",
-        "Amo resolver problemas que parecem impossíveis.",
-        "Meu tempo livre e família vêm antes da carreira.",
-        "Quero ser reconhecido pelo meu conhecimento técnico.",
-        "Gosto de ser o responsável pelo sucesso de uma equipe.",
-        "Prefiro trabalhar sozinho e sem supervisão constante.",
-        "Valorizo benefícios garantidos e estabilidade.",
-        "Quero inventar algo que seja inteiramente meu.",
-        "Trabalhar por uma causa social me motiva muito.",
-        "Adoro competições onde preciso ser o melhor.",
-        "Busco flexibilidade para conciliar meus hobbies."
-        // Reduzido para 16 questões no exemplo (2 por categoria) para agilizar, 
-        // mas você pode adicionar as 40 seguindo a mesma lógica.
+        "Sonho em ser tão bom no que faço que meus conhecimentos especializados sejam procurados.",
+        "Sinto-me realizado quando sou capaz de gerenciar o esforço dos outros.",
+        "Sonho em ter liberdade de fazer o trabalho à minha maneira e no meu tempo.",
+        "Segurança e estabilidade são mais importantes para mim do que liberdade e autonomia.",
+        "Estou sempre procurando ideias para iniciar meu próprio negócio.",
+        "Sinto-me bem quando sinto que fiz uma contribuição real para a sociedade.",
+        "Sonho com uma carreira onde eu possa vencer situações desafiadoras.",
+        "Preferiria deixar meu emprego do que comprometer minha vida familiar.",
+        "Sinto-me sucedido apenas quando desenvolvo minhas habilidades técnicas a um nível alto.",
+        "Sonho em dirigir uma organização complexa e tomar decisões que afetem pessoas.",
+        "Sinto-me realizado quando tenho total liberdade de definir minhas tarefas e horários.",
+        "Preferiria deixar meu emprego a aceitar uma tarefa que coloque em risco minha segurança.",
+        "Montar meu próprio negócio é mais importante do que uma alta posição gerencial.",
+        "Sinto-me realizado quando posso utilizar meus talentos a serviço dos outros.",
+        "Sinto-me realizado apenas quando enfrento e supero desafios muito difíceis.",
+        "Sonho com uma carreira que me permita integrar necessidades pessoais e de trabalho.",
+        "Tornar-me gerente técnico na minha área é melhor do que ser gerente geral.",
+        "Só me sentirei bem-sucedido se me tornar gerente geral de alguma organização.",
+        "Só me sentirei bem-sucedido se alcançar total autonomia e liberdade.",
+        "Procuro trabalhos em organizações que me deem senso de estabilidade.",
+        "Sinto-me realizado ao construir algo que seja resultado das minhas ideias e esforços.",
+        "Usar minhas habilidades para tornar o mundo melhor é mais importante que cargo alto.",
+        "Sinto-me realizado quando resolvi problemas insolúveis ou venci o impossível.",
+        "Sinto-me bem-sucedido apenas quando equilibro vida pessoal, familiar e carreira.",
+        "Preferiria deixar meu emprego do que aceitar uma tarefa que me afaste da minha área.",
+        "Tornar-me gerente geral é mais atraente que ser gerente técnico.",
+        "Fazer o trabalho à minha maneira, sem restrições, é mais importante que segurança.",
+        "Sinto-me realizado quando percebo que tenho total segurança financeira no trabalho.",
+        "Só me sinto bem-sucedido quando crio algo que é inteiramente de minha autoria.",
+        "Sonho em ter uma carreira que faça uma real contribuição à humanidade.",
+        "Procuro oportunidades que desafiem fortemente minhas habilidades de resolver problemas.",
+        "Equilibrar as exigências da vida pessoal e profissional é prioridade máxima.",
+        "Sinto-me realizado quando sou capaz de empregar meus talentos especiais.",
+        "Preferiria sair da organização a aceitar um cargo que me afaste da gerência geral.",
+        "Preferiria sair da organização a aceitar um cargo que reduza minha liberdade.",
+        "Sonho em ter uma carreira que me dê senso de segurança.",
+        "Sonho em iniciar e montar meu próprio negócio.",
+        "Preferiria sair da organização a aceitar uma tarefa que prejudique minha ajuda aos outros.",
+        "Trabalhar em problemas insolúveis é mais importante que um cargo de alto nível.",
+        "Sempre procurei trabalhos que minimizassem interferências na minha vida pessoal."
     ];
 
-    const categories = ["TF", "GG", "Al", "SE", "CE", "SD", "DP", "EV"];
+    const cats = ["TF", "GG", "Al", "SE", "CE", "SD", "DP", "EV"];
     const container = document.getElementById('questions-container');
-    let userScores = {};
+    let userAnswers = {};
 
     questions.forEach((q, i) => {
         const div = document.createElement('div');
         div.className = 'question-card';
-        div.innerHTML = `
-            <p><strong>${i+1}.</strong> ${q}</p>
+        div.innerHTML = `<p><strong>Questão ${i+1}:</strong> ${q}</p>
             <div class="options" id="q${i}">
-                ${[1,2,3,4,5,6].map(n => `<div class="option-btn" onclick="selectOption(${i}, ${n})">${n}</div>`).join('')}
-            </div>
-        `;
+                ${[1,2,3,4,5,6].map(n => `<div class="option-btn" onclick="setScore(${i}, ${n})">${n}</div>`).join('')}
+            </div>`;
         container.appendChild(div);
     });
 
-    function selectOption(qIdx, val) {
-        const options = document.querySelectorAll(`#q${qIdx} .option-btn`);
-        options.forEach(opt => opt.classList.remove('selected'));
-        options[val-1].classList.add('selected');
-        userScores[qIdx] = val;
+    function setScore(qIdx, val) {
+        document.querySelectorAll(`#q${qIdx} .option-btn`).forEach(b => b.classList.remove('selected'));
+        event.target.classList.add('selected');
+        userAnswers[qIdx] = val;
     }
 
     function showResults() {
-        const name = document.getElementById('userName').value || "Estudante";
-        const totalQuestions = questions.length;
-        if(Object.keys(userScores).length < totalQuestions) {
-            alert("Por favor, responda todas as questões!");
-            return;
-        }
-
+        if (Object.keys(userAnswers).length < 40) { return alert("Responda todas as 40 perguntas antes de continuar!"); }
+        
         let sums = {TF:0, GG:0, Al:0, SE:0, CE:0, SD:0, DP:0, EV:0};
-        Object.keys(userScores).forEach(idx => {
-            let cat = categories[idx % 8];
-            sums[cat] += userScores[idx];
+        for(let i=0; i<40; i++) { sums[cats[i % 8]] += userAnswers[i]; }
+
+        // Bônus do Top 3
+        [1,2,3].forEach(n => {
+            let qNum = parseInt(document.getElementById('top'+n).value) - 1;
+            if(!isNaN(qNum) && qNum >= 0 && qNum < 40) { sums[cats[qNum % 8]] += 4; }
         });
 
-        // Calcular média (assumindo 2 questões por categoria no exemplo de 16)
-        let resultsArray = categories.map(cat => ({
-            id: cat,
-            score: (sums[cat] / (totalQuestions / 8)).toFixed(1),
-            ...anchorData[cat]
-        }));
-
-        // Ordenar do maior para o menor
-        resultsArray.sort((a, b) => b.score - a.score);
+        let finalResults = cats.map(c => ({
+            id: c, score: (sums[c] / 5).toFixed(1), ...anchorInfo[c]
+        })).sort((a,b) => b.score - a.score);
 
         document.getElementById('quiz-screen').style.display = 'none';
         document.getElementById('results-screen').style.display = 'block';
-        document.getElementById('welcome-msg').innerText = `Parabéns, ${name}! 🏆`;
-
         const list = document.getElementById('anchor-list');
-        resultsArray.forEach(res => {
-            list.innerHTML += `
-                <div class="anchor-result">
-                    <div class="anchor-header">
-                        <span class="anchor-name">${res.name}</span>
-                        <span class="anchor-score">${res.score} pts</span>
-                    </div>
-                    <p class="anchor-desc">${res.desc}</p>
-                </div>
-            `;
+        finalResults.forEach(res => {
+            list.innerHTML += `<div class="anchor-result">
+                <div class="anchor-header"><span class="anchor-name">${res.name}</span><span class="anchor-score">${res.score} pts</span></div>
+                <p class="anchor-desc">${res.desc}</p></div>`;
         });
-        window.scrollTo(0, 0);
+        window.scrollTo(0,0);
     }
 </script>
-
 </body>
 </html>
