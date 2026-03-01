@@ -210,7 +210,7 @@ const anchors = {
   SE:{name:"Segurança e Estabilidade",   short:"SE",icon:"🛡️",color:"#ffb457",
       desc:"Estabilidade financeira e segurança no emprego são sua base. Você toma decisões de carreira pensando no longo prazo e valoriza ambientes previsíveis onde pode construir algo sólido."},
   CE:{name:"Criatividade Empreendedora", short:"CE",icon:"🚀",color:"#ff7c57",
-      desc:"Você precisa criar algo seu — um negócio, produto ou marca que carregue sua identidade. Trabalhar para outros é passageiro; o verdadeiro objetivo é ter seu próprio empreendimento."},
+      desc:"Você precisa criar algo seu, seja um negócio, produto ou marca que carregue sua identidade. Trabalhar para outros é passageiro; o verdadeiro objetivo é ter seu próprio empreendimento."},
   SD:{name:"Serviço e Dedicação",        short:"SD",icon:"❤️",color:"#ff6bac",
       desc:"Seu trabalho precisa ter propósito. Você quer tornar o mundo melhor — ajudar pessoas, resolver problemas sociais ou contribuir para algo maior que o lucro."},
   DP:{name:"Desafio Puro",               short:"DP",icon:"⚡",color:"#c8ff57",
@@ -238,8 +238,8 @@ const questions = [
   {text:"Sinto-me realizado em minha carreira apenas quando enfrento e supero desafios extremamente difíceis.",cat:"DP"},
   {text:"Sonho com uma carreira que me permita integrar minhas necessidades pessoais, familiares e de trabalho.",cat:"EV"},
   {text:"Tornar-me um gerente técnico em minha área de especialização é mais atraente para mim do que tornar-me um gerente geral.",cat:"TF"},
-  {text:"Sentir-me-ei bem-sucedido em minha carreira apenas quando me tornar um gerente geral em alguma organização.",cat:"GG"},
-  {text:"Sentir-me-ei bem-sucedido em minha carreira apenas quando alcançar total autonomia e liberdade.",cat:"AI"},
+  {text:"Vou me sentir bem-sucedido em minha carreira apenas quando me tornar um gerente geral em alguma organização.",cat:"GG"},
+  {text:"Vou me sentir bem-sucedido em minha carreira apenas quando alcançar total autonomia e liberdade.",cat:"AI"},
   {text:"Procuro trabalhos em organizações que me deem senso de segurança e estabilidade.",cat:"SE"},
   {text:"Sinto-me realizado em minha carreira quando tenho a oportunidade de construir alguma coisa que seja resultado unicamente de minhas próprias ideias e esforços.",cat:"CE"},
   {text:"Utilizar minhas habilidades para tornar o mundo um lugar melhor para se viver e trabalhar é mais importante para mim do que alcançar uma posição gerencial de alto nível.",cat:"SD"},
@@ -363,7 +363,7 @@ async function sendToSheet(results) {
   el.style.display='block'; el.className='send-status';
   el.textContent='⏳ Registrando sua participação…';
 
-  if (APPS_SCRIPT_URL==="COLE_SUA_URL_AQUI"){
+  if (APPS_SCRIPT_URL==="https://script.google.com/a/macros/fmm.org.br/s/AKfycbw9jJuN2Tx5mWkBM8VN0YMSM1n2Y4Rm1Cd9ZVwDZLVYpKX0woz49UQn7rftHZ5WKri1/exec"){
     el.className='send-status err';
     el.textContent='⚠️ Integração com planilha não configurada.';
     return;
@@ -391,4 +391,5 @@ async function sendToSheet(results) {
 </script>
 </body>
 </html>
+
 
