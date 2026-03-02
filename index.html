@@ -6,13 +6,59 @@
 <title>Âncoras de Carreira</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
+  /* ── TEMA ESCURO (padrão — igual ao seu original) ── */
   :root {
     --bg: #0e0e14; --surface: #16161f; --card: #1c1c28; --border: #2a2a3d;
     --accent: #c8ff57; --accent2: #ff6bac; --accent3: #57d4ff;
     --text: #f0f0f8; --muted: #7c7c9a; --radius: 16px;
+    --text-sub: #a0a0c0;
   }
+
+  /* ── TEMA CLARO ── */
+  [data-theme="light"] {
+    --bg: #f4f4f0; --surface: #ffffff; --card: #ffffff; --border: #c0c0d0;
+    --accent: #5a8a00; --accent2: #c0005a; --accent3: #0070aa;
+    --text: #111118; --muted: #505068; --text-sub: #2a2a3a;
+  }
+  [data-theme="light"] .blob { opacity: 0.05; }
+  [data-theme="light"] .input-group select option { background: #fff; color: #111; }
+  [data-theme="light"] .anchor-card:first-child { background: rgba(90,138,0,0.05); }
+  [data-theme="light"] .opt.sel { box-shadow: 0 4px 18px rgba(90,138,0,0.3); }
+  [data-theme="light"] .btn-primary { box-shadow: 0 0 40px rgba(90,138,0,0.2); }
+  [data-theme="light"] .btn-primary:hover { box-shadow: 0 8px 40px rgba(90,138,0,0.35); }
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ── SKIP LINK (acessibilidade — invisível até receber foco) ── */
+  .skip-link {
+    position: absolute; top: -999px; left: 8px;
+    background: var(--accent); color: #000;
+    padding: 10px 18px; border-radius: 8px;
+    font-weight: 700; font-size: 15px; z-index: 9999;
+    text-decoration: none;
+  }
+  .skip-link:focus { top: 8px; }
+
+  /* ── BOTÃO DE TEMA ── */
+  .theme-toggle {
+    position: fixed; top: 16px; right: 16px; z-index: 100;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 100px; padding: 8px 16px;
+    cursor: pointer; font-size: 12px;
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    color: var(--text); display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s;
+  }
+  .theme-toggle:hover { border-color: var(--accent); }
+  .theme-toggle:focus { outline: 3px solid var(--accent); outline-offset: 3px; }
+
   .blob { position: fixed; border-radius: 50%; filter: blur(90px); opacity: 0.15; pointer-events: none; z-index: 0; }
   .blob1 { width: 500px; height: 500px; background: #c8ff57; top: -150px; right: -100px; }
   .blob2 { width: 400px; height: 400px; background: #ff6bac; bottom: -100px; left: -80px; }
@@ -26,7 +72,7 @@
   /* LANDING */
   .hero { text-align: center; padding: 50px 0 36px; }
   .tag { display: inline-block; background: var(--accent); color: #0e0e14; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 6px 16px; border-radius: 100px; margin-bottom: 24px; }
-  .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(36px, 8vw, 62px); font-weight: 800; line-height: 1.05; letter-spacing: -2px; margin-bottom: 16px; }
+  .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(36px, 8vw, 62px); font-weight: 800; line-height: 1.05; letter-spacing: -2px; margin-bottom: 16px; color: var(--text); }
   .hero h1 span { color: var(--accent); }
   .hero p { font-size: 16px; color: var(--muted); max-width: 460px; margin: 0 auto 36px; line-height: 1.7; }
 
@@ -41,20 +87,21 @@
   .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .field-grid .full { grid-column: 1 / -1; }
   .input-group { display: flex; flex-direction: column; gap: 6px; }
-  .input-group label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+  .input-group label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); cursor: pointer; }
   .input-group input, .input-group select { padding: 13px 16px; background: var(--surface); border: 2px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none; transition: border-color 0.2s; width: 100%; appearance: none; -webkit-appearance: none; }
   .input-group input::placeholder { color: var(--muted); }
-  .input-group input:focus, .input-group select:focus { border-color: var(--accent); }
+  .input-group input:focus, .input-group select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(200,255,87,0.15); }
+  [data-theme="light"] .input-group input:focus,
+  [data-theme="light"] .input-group select:focus { box-shadow: 0 0 0 3px rgba(90,138,0,0.15); }
   .select-wrap { position: relative; }
   .select-wrap::after { content: '▾'; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 14px; }
-  .input-group select option { background: #1c1c28; }
+  .input-group select option { background: #1c1c28; color: var(--text); }
 
   /* BUTTONS */
   .btn-primary { display: block; width: 100%; padding: 18px; background: var(--accent); color: #0e0e14; border: none; border-radius: var(--radius); font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 800; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; letter-spacing: 0.5px; box-shadow: 0 0 40px rgba(200,255,87,0.2); }
   .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(200,255,87,0.35); }
+  .btn-primary:focus { outline: 3px solid var(--accent); outline-offset: 4px; }
   .btn-primary:active { transform: translateY(0); }
-  .btn-secondary { display: block; width: 100%; padding: 18px; background: transparent; color: var(--text); border: 2px solid var(--border); border-radius: var(--radius); font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; transition: border-color 0.2s, color 0.2s; margin-top: 16px; letter-spacing: 0.5px; }
-  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
   /* PROGRESS */
   .progress-bar-wrap { position: sticky; top: 0; z-index: 10; background: var(--bg); padding: 14px 0 12px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
@@ -68,17 +115,28 @@
   .q-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; margin-bottom: 14px; transition: border-color 0.2s; }
   .q-card.answered { border-color: rgba(200,255,87,0.25); }
   .q-num { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
-  .q-text { font-size: 14.5px; line-height: 1.65; margin-bottom: 18px; }
+  .q-text { font-size: 15px; line-height: 1.7; margin-bottom: 18px; color: var(--text); }
   .scale-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-bottom: 6px; }
   .options { display: flex; gap: 6px; }
-  .opt { flex: 1; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: var(--surface); border: 2px solid var(--border); border-radius: 10px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.15s; color: var(--muted); }
+
+  /* .opt agora é <button> para funcionar com teclado e leitor de tela */
+  .opt {
+    flex: 1; aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    background: var(--surface); border: 2px solid var(--border);
+    border-radius: 10px; font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 14px; cursor: pointer; transition: all 0.15s; color: var(--muted);
+    /* reset de estilos de botão */
+    padding: 0; line-height: 1;
+  }
   .opt:hover { border-color: var(--accent); color: var(--accent); background: rgba(200,255,87,0.06); }
+  .opt:focus { outline: 3px solid var(--accent); outline-offset: 2px; }
   .opt.sel { background: var(--accent); border-color: var(--accent); color: #0e0e14; transform: scale(1.05); box-shadow: 0 4px 18px rgba(200,255,87,0.3); }
-  .warn { color: #ff6bac; font-size: 13px; text-align: center; margin-top: 12px; display: none; }
+
+  .warn { color: #ff6bac; font-size: 13px; text-align: center; margin-top: 12px; display: none; padding: 12px; background: var(--card); border-radius: 10px; border: 2px solid #ff6bac; font-weight: 600; }
 
   /* RESULTS */
   .result-hero { text-align: center; padding: 16px 0 36px; }
-  .result-hero h2 { font-family: 'Syne', sans-serif; font-size: clamp(28px, 6vw, 46px); font-weight: 800; line-height: 1.1; margin-bottom: 10px; }
+  .result-hero h2 { font-family: 'Syne', sans-serif; font-size: clamp(28px, 6vw, 46px); font-weight: 800; line-height: 1.1; margin-bottom: 10px; color: var(--text); }
   .result-hero p { font-size: 14px; color: var(--muted); }
   .student-badge { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 28px; }
   .student-badge .badge-icon { font-size: 28px; }
@@ -102,51 +160,61 @@
   .anchor-desc { font-size: 13.5px; color: var(--muted); line-height: 1.7; }
 
   .send-status { text-align: center; padding: 16px; font-size: 14px; color: var(--muted); display: none; margin-top: 8px; border-radius: 10px; }
-  .send-status.ok { color: var(--accent); background: rgba(200,255,87,0.07); }
-  .send-status.err { color: var(--accent2); background: rgba(255,107,172,0.07); }
+  .send-status.ok { color: var(--accent); background: rgba(200,255,87,0.07); border: 1px solid var(--accent); }
+  .send-status.err { color: var(--accent2); background: rgba(255,107,172,0.07); border: 1px solid var(--accent2); }
 
   @media (max-width: 520px) {
     .field-grid { grid-template-columns: 1fr; }
     .info-cards { grid-template-columns: 1fr 1fr; }
     .anchor-card:first-child::after { display: none; }
+    .theme-toggle .tlabel { display: none; }
   }
 </style>
 </head>
 <body>
 
-<div class="blob blob1"></div>
-<div class="blob blob2"></div>
-<div class="blob blob3"></div>
+<!-- Skip link: invisível, aparece só quando o usuário navega com Tab -->
+<a href="#main" class="skip-link">Ir para o conteúdo principal</a>
+
+<!-- Botão de alternância de tema -->
+<button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" aria-label="Ativar modo claro">
+  <span id="themeIcon">☀️</span>
+  <span class="tlabel" id="themeLabel">Modo claro</span>
+</button>
+
+<div class="blob blob1" aria-hidden="true"></div>
+<div class="blob blob2" aria-hidden="true"></div>
+<div class="blob blob3" aria-hidden="true"></div>
 
 <!-- ══ LANDING ══ -->
-<div id="landing">
+<div id="landing" id="main">
   <div class="hero">
-    <div class="tag">Edgar H. Schein · Adaptado</div>
+    <div class="tag" aria-hidden="true">Edgar H. Schein · Adaptado</div>
     <h1>Descubra sua<br><span>Âncora de<br>Carreira</span></h1>
     <p>40 perguntas para revelar o que você realmente não abre mão na sua vida profissional.</p>
   </div>
 
   <div class="info-cards">
-    <div class="info-card"><span class="num">40</span><p>Perguntas rápidas</p></div>
-    <div class="info-card"><span class="num">8</span><p>Âncoras de carreira</p></div>
-    <div class="info-card"><span class="num">10'</span><p>Tempo estimado</p></div>
+    <div class="info-card"><span class="num" aria-hidden="true">40</span><p>Perguntas rápidas</p></div>
+    <div class="info-card"><span class="num" aria-hidden="true">8</span><p>Âncoras de carreira</p></div>
+    <div class="info-card"><span class="num" aria-hidden="true">10'</span><p>Tempo estimado</p></div>
   </div>
 
   <div class="form-section">
     <div class="form-section-title">Seus dados</div>
     <div class="field-grid">
       <div class="input-group full">
-        <label>Nome completo</label>
-        <input type="text" id="f-nome" placeholder="Digite seu nome completo" autocomplete="off">
+        <label for="f-nome">Nome completo</label>
+        <input type="text" id="f-nome" placeholder="Digite seu nome completo" autocomplete="name" aria-required="true">
       </div>
       <div class="input-group">
-        <label>RA</label>
-        <input type="text" id="f-ra" placeholder="Nº de registro" autocomplete="off">
+        <label for="f-ra">RA</label>
+        <input type="text" id="f-ra" placeholder="Nº de registro" autocomplete="off" aria-required="true" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')">
       </div>
       <div class="input-group">
-        <label>Turma</label>
+        <label for="f-turma">Turma</label>
         <div class="select-wrap">
-          <select id="f-turma">
+          <select id="f-turma" aria-required="true">
             <option value="" disabled selected>Selecionar…</option>
             <option>2AA</option><option>2AB</option><option>2AC</option><option>2AD</option>
             <option>2BA</option><option>2BB</option><option>2BC</option><option>2BD</option>
@@ -157,84 +225,91 @@
     </div>
   </div>
 
-<div style="background:#1c1c28;border:1px solid #2a2a3d;border-radius:16px;padding:24px;margin-bottom:24px;text-align:left;">
-  <p style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7c7c9a;margin-bottom:10px;">📋 Antes de começar</p>
-  <p style="font-size:14px;color:#a0a0c0;line-height:1.8;margin-bottom:20px;">Responda com a <strong style="color:#f0f0f8;">máxima sinceridade</strong> — lembre que não existe resposta certa ou errada. O que importa é o que você realmente sente e valoriza. Na dúvida, confie na sua primeira impressão.</p>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px;text-align:left;">
+    <p style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">📋 Antes de começar</p>
+    <p style="font-size:14px;color:var(--text-sub);line-height:1.8;margin-bottom:20px;">Responda com a <strong style="color:var(--text);">máxima sinceridade</strong> — lembre que não existe resposta certa ou errada. O que importa é o que você realmente sente e valoriza. Na dúvida, confie na sua primeira impressão.</p>
 
-  <p style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7c7c9a;margin-bottom:12px;">🔢 O que significa cada número?</p>
-  <div style="display:flex;flex-direction:column;gap:8px;">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <span style="background:#c8ff57;color:#0e0e14;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</span>
-      <span style="font-size:13px;color:#a0a0c0;">Nunca é verdadeiro para mim — não me identifico nada com essa afirmação.</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:12px;">
-      <span style="background:#a8d847;color:#0e0e14;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</span>
-      <span style="font-size:13px;color:#a0a0c0;">Raramente é verdadeiro — acontece muito pouco na minha vida.</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:12px;">
-      <span style="background:#88b037;color:#0e0e14;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</span>
-      <span style="font-size:13px;color:#a0a0c0;">Às vezes é verdadeiro — me identifico um pouco, mas não sempre.</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:12px;">
-      <span style="background:#689027;color:#f0f0f8;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</span>
-      <span style="font-size:13px;color:#a0a0c0;">Frequentemente é verdadeiro — me identifico bastante com essa afirmação.</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:12px;">
-      <span style="background:#487010;color:#f0f0f8;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">5</span>
-      <span style="font-size:13px;color:#a0a0c0;">Quase sempre é verdadeiro — faz muito sentido para mim na maioria das vezes.</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:12px;">
-      <span style="background:#2a5000;color:#c8ff57;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">6</span>
-      <span style="font-size:13px;color:#a0a0c0;">Sempre é verdadeiro — me identifico totalmente, descreve muito bem quem eu sou.</span>
+    <p style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">🔢 O que significa cada número?</p>
+    <div style="display:flex;flex-direction:column;gap:8px;" role="list">
+      <div style="display:flex;align-items:center;gap:12px;" role="listitem">
+        <span style="background:#c8ff57;color:#0e0e14;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" aria-hidden="true">1</span>
+        <span style="font-size:14px;color:var(--text-sub);"><strong>1 —</strong> Nunca é verdadeiro para mim — não me identifico nada com essa afirmação.</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;" role="listitem">
+        <span style="background:#a8d847;color:#0e0e14;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" aria-hidden="true">2</span>
+        <span style="font-size:14px;color:var(--text-sub);"><strong>2 —</strong> Raramente é verdadeiro — acontece muito pouco na minha vida.</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;" role="listitem">
+        <span style="background:#88b037;color:#0e0e14;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" aria-hidden="true">3</span>
+        <span style="font-size:14px;color:var(--text-sub);"><strong>3 —</strong> Às vezes é verdadeiro — me identifico um pouco, mas não sempre.</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;" role="listitem">
+        <span style="background:#689027;color:#f0f0f8;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" aria-hidden="true">4</span>
+        <span style="font-size:14px;color:var(--text-sub);"><strong>4 —</strong> Frequentemente é verdadeiro — me identifico bastante com essa afirmação.</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;" role="listitem">
+        <span style="background:#487010;color:#f0f0f8;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" aria-hidden="true">5</span>
+        <span style="font-size:14px;color:var(--text-sub);"><strong>5 —</strong> Quase sempre é verdadeiro — faz muito sentido para mim na maioria das vezes.</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;" role="listitem">
+        <span style="background:#2a5000;color:#c8ff57;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" aria-hidden="true">6</span>
+        <span style="font-size:14px;color:var(--text-sub);"><strong>6 —</strong> Sempre é verdadeiro — me identifico totalmente, descreve muito bem quem eu sou.</span>
+      </div>
     </div>
   </div>
-</div>
 
-<button class="btn-primary" onclick="startQuiz()">COMEÇAR O TESTE →</button>
+  <button class="btn-primary" onclick="startQuiz()">COMEÇAR O TESTE →</button>
 </div>
 
 <!-- ══ QUIZ ══ -->
-<div id="quiz-screen">
-  <div class="progress-bar-wrap">
+<div id="quiz-screen" role="main">
+  <div class="progress-bar-wrap" role="status" aria-live="polite">
     <div class="progress-meta">
       <span id="progress-text">0 de 40 respondidas</span>
       <strong id="progress-pct">0%</strong>
     </div>
-    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
   </div>
   <div id="questions-container"></div>
-  <p class="warn" id="warn-msg">⚠️ Responda todas as 40 questões para continuar.</p>
+  <div class="warn" id="warn-msg" role="alert">⚠️ Responda todas as 40 questões para continuar.</div>
   <button class="btn-primary" onclick="submitQuiz()" style="margin-top:12px">VER MEU RESULTADO →</button>
 </div>
 
 <!-- ══ RESULTS ══ -->
-<div id="results-screen">
+<div id="results-screen" role="main">
   <div class="result-hero">
-    <div class="tag">Seu resultado</div>
+    <div class="tag" aria-hidden="true">Seu resultado</div>
     <h2 id="result-title">Parabéns! 🏆</h2>
     <p>Âncoras ordenadas da mais forte para a menos expressiva.</p>
   </div>
 
   <div class="student-badge">
-    <div class="badge-icon">🎓</div>
+    <div class="badge-icon" aria-hidden="true">🎓</div>
     <div class="badge-info" id="badge-info">—</div>
   </div>
 
-  <div id="anchor-list"></div>
-  <div class="send-status" id="send-status"></div>
-  <div style="background:#1c1c28;border:1px solid #2a2a3d;border-radius:16px;padding:24px;margin-top:24px;margin-bottom:8px;">
-  <p style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7c7c9a;margin-bottom:10px;">📌 Importante saber</p>
-  <p style="font-size:14px;color:#a0a0c0;line-height:1.8;margin:0;">Esses resultados <strong style="color:#f0f0f8;">não são definitivos</strong>. Como o próprio Edgar Schein explica, as âncoras de carreira se desenvolvem ao longo do tempo e podem mudar conforme você acumula novas experiências profissionais, se conhece melhor e enfrenta diferentes desafios. Encare este resultado como um <strong style="color:#c8ff57;">ponto de partida para a reflexão</strong>, não como um rótulo fixo.</p>
-</div>
+  <div id="anchor-list" aria-label="Lista de âncoras de carreira"></div>
+  <div class="send-status" id="send-status" role="status" aria-live="polite"></div>
 
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-top:24px;margin-bottom:8px;">
+    <p style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">📌 Importante saber</p>
+    <p style="font-size:14px;color:var(--text-sub);line-height:1.8;margin:0;">Esses resultados <strong style="color:var(--text);">não são definitivos</strong>. Como o próprio Edgar Schein explica, as âncoras de carreira se desenvolvem ao longo do tempo e podem mudar conforme você acumula novas experiências profissionais, se conhece melhor e enfrenta diferentes desafios. Encare este resultado como um <strong style="color:var(--accent);">ponto de partida para a reflexão</strong>, não como um rótulo fixo.</p>
+  </div>
 </div>
 
 <script>
-// ════════════════════════════════════════════════════════
-//  ⬇️  PASSO ÚNICO DO PROFESSOR: cole aqui a URL
-//  do seu Google Apps Script (veja LEIA-ME.txt)
-// ════════════════════════════════════════════════════════
 const APPS_SCRIPT_URL = "https://script.google.com/a/macros/fmm.org.br/s/AKfycbzGRposbIw38JfVmiNNmS1PCTk_PyioHp7AC8JBuz2krYJYJkFG-r9kRnTtdBROIKXL/exec";
+
+// ── TEMA ────────────────────────────────────────────────
+function toggleTheme() {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  document.documentElement.setAttribute('data-theme', isLight ? '' : 'light');
+  document.getElementById('themeIcon').textContent = isLight ? '☀️' : '🌙';
+  document.getElementById('themeLabel').textContent = isLight ? 'Modo claro' : 'Modo escuro';
+  document.getElementById('themeBtn').setAttribute('aria-label', isLight ? 'Ativar modo claro' : 'Ativar modo escuro');
+}
 
 // ── ÂNCORAS ─────────────────────────────────────────────
 const anchors = {
@@ -254,6 +329,11 @@ const anchors = {
       desc:"O que te energiza são problemas impossíveis. Quanto mais difícil, mais interessante. Tarefas fáceis rapidamente viram tédio — você precisa de obstáculos reais para se sentir vivo profissionalmente."},
   EV:{name:"Estilo de Vida",             short:"EV",icon:"⚖️",color:"#57d4ff",
       desc:"Para você, sucesso é equilíbrio total: família, lazer e trabalho integrados. Você não aceita carreiras que consumam sua vida inteira e define sucesso de forma mais ampla que apenas status ou salário."}
+};
+
+const scaleLabels = {
+  1:"Nunca verdadeiro", 2:"Raramente verdadeiro", 3:"Às vezes verdadeiro",
+  4:"Frequentemente verdadeiro", 5:"Quase sempre verdadeiro", 6:"Sempre verdadeiro"
 };
 
 // ── 40 QUESTÕES ─────────────────────────────────────────
@@ -300,22 +380,29 @@ const questions = [
   {text:"Sempre procurei oportunidades de trabalho que minimizassem interferências com assuntos pessoais e familiares.",cat:"EV"}
 ];
 
-// ── STATE ────────────────────────────────────────────────
 let scores = {}, student = {};
 
 // ── BUILD QUIZ ───────────────────────────────────────────
 function buildQuiz() {
   const c = document.getElementById('questions-container');
   c.innerHTML = '';
-  questions.forEach((q,i) => {
+  questions.forEach((q, i) => {
     const d = document.createElement('div');
     d.className = 'q-card'; d.id = `qcard${i}`;
     d.innerHTML = `
-      <div class="q-num">Questão ${i+1} de 40</div>
-      <p class="q-text">${q.text}</p>
-      <div class="scale-labels"><span>Nunca verdadeiro</span><span>Sempre verdadeiro</span></div>
-      <div class="options" id="opts${i}">
-        ${[1,2,3,4,5,6].map(n=>`<div class="opt" onclick="pick(${i},${n})">${n}</div>`).join('')}
+      <div class="q-num" aria-hidden="true">Questão ${i+1} de 40</div>
+      <p class="q-text" id="qlabel${i}">${q.text}</p>
+      <div class="scale-labels" aria-hidden="true">
+        <span>Nunca verdadeiro</span><span>Sempre verdadeiro</span>
+      </div>
+      <div class="options" role="group" aria-labelledby="qlabel${i}" id="opts${i}">
+        ${[1,2,3,4,5,6].map(n=>`
+          <button class="opt"
+            onclick="pick(${i},${n})"
+            aria-label="${scaleLabels[n]}"
+            aria-pressed="false"
+            id="opt${i}_${n}">${n}</button>
+        `).join('')}
       </div>`;
     c.appendChild(d);
   });
@@ -323,7 +410,11 @@ function buildQuiz() {
 
 function pick(idx, val) {
   scores[idx] = val;
-  document.querySelectorAll(`#opts${idx} .opt`).forEach((o,i)=>o.classList.toggle('sel',i===val-1));
+  document.querySelectorAll(`#opts${idx} .opt`).forEach((o, i) => {
+    const sel = i === val - 1;
+    o.classList.toggle('sel', sel);
+    o.setAttribute('aria-pressed', sel ? 'true' : 'false');
+  });
   document.getElementById(`qcard${idx}`).classList.add('answered');
   updateProgress();
   document.getElementById('warn-msg').style.display = 'none';
@@ -334,9 +425,9 @@ function updateProgress() {
   document.getElementById('progress-text').textContent = `${n} de 40 respondidas`;
   document.getElementById('progress-pct').textContent = `${pct}%`;
   document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-track').setAttribute('aria-valuenow', pct);
 }
 
-// ── NAV ──────────────────────────────────────────────────
 function startQuiz() {
   const nome=document.getElementById('f-nome').value.trim(),
         ra=document.getElementById('f-ra').value.trim(),
@@ -351,13 +442,18 @@ function startQuiz() {
 function submitQuiz() {
   if (Object.keys(scores).length<40){
     document.getElementById('warn-msg').style.display='block';
-    for(let i=0;i<40;i++){if(scores[i]===undefined){document.getElementById(`qcard${i}`).scrollIntoView({behavior:'smooth',block:'center'});break;}}
+    for(let i=0;i<40;i++){
+      if(scores[i]===undefined){
+        document.getElementById(`qcard${i}`).scrollIntoView({behavior:'smooth',block:'center'});
+        document.getElementById(`opt${i}_1`).focus();
+        break;
+      }
+    }
     return;
   }
   showResults();
 }
 
-// ── RESULTS ──────────────────────────────────────────────
 function showResults() {
   const sums={TF:0,GG:0,AI:0,SE:0,CE:0,SD:0,DP:0,EV:0};
   questions.forEach((q,i)=>{sums[q.cat]+=scores[i];});
@@ -374,15 +470,16 @@ function showResults() {
     const pct=Math.round((r.avg/6)*100);
     const card=document.createElement('div');
     card.className='anchor-card';
+    card.setAttribute('aria-label',`${idx+1}º lugar: ${r.name}, pontuação ${r.avg.toFixed(1)} de 6`);
     card.innerHTML=`
       <div class="anchor-top">
-        <div class="anchor-icon" style="background:${r.color}22">${r.icon}</div>
+        <div class="anchor-icon" style="background:${r.color}22" aria-hidden="true">${r.icon}</div>
         <div class="anchor-meta">
           <div class="anchor-name" style="color:${r.color}">${r.name}</div>
           <div class="anchor-pos">${r.short} · ${idx===0?'Âncora principal':`${idx+1}º lugar`}</div>
         </div>
       </div>
-      <div class="score-row">
+      <div class="score-row" aria-hidden="true">
         <div class="score-bar-track"><div class="score-bar-fill" style="width:${pct}%;background:${r.color}"></div></div>
         <span class="score-val" style="color:${r.color}">${r.avg.toFixed(1)}</span>
       </div>
@@ -394,17 +491,10 @@ function showResults() {
   window.scrollTo(0,0);
 }
 
-// ── GOOGLE SHEETS ─────────────────────────────────────────
 async function sendToSheet(results) {
   const el=document.getElementById('send-status');
   el.style.display='block'; el.className='send-status';
   el.textContent='⏳ Registrando sua participação…';
-
-  if (APPS_SCRIPT_URL==="https://script.google.com/a/macros/fmm.org.br/s/AKfycbw9jJuN2Tx5mWkBM8VN0YMSM1n2Y4Rm1Cd9ZVwDZLVYpKX0woz49UQn7rftHZ5WKri1/exec"){
-    el.className='send-status err';
-    el.textContent='⚠️ Integração com planilha não configurada.';
-    return;
-  }
 
   const payload={
     nome:student.nome, ra:student.ra, turma:student.turma,
@@ -428,8 +518,3 @@ async function sendToSheet(results) {
 </script>
 </body>
 </html>
-
-
-
-
-
