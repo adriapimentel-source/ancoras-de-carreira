@@ -189,7 +189,12 @@
 
   <div id="anchor-list"></div>
   <div class="send-status" id="send-status"></div>
-  <button class="btn-secondary" onclick="location.reload()">↺ Refazer o teste</button>
+  <div style="background:#1c1c28;border:1px solid #2a2a3d;border-radius:16px;padding:24px;margin-top:24px;margin-bottom:8px;">
+  <p style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7c7c9a;margin-bottom:10px;">📌 Importante saber</p>
+  <p style="font-size:14px;color:#a0a0c0;line-height:1.8;margin:0;">Esses resultados <strong style="color:#f0f0f8;">não são definitivos</strong>. Como o próprio Edgar Schein explica, as âncoras de carreira se desenvolvem ao longo do tempo e podem mudar conforme você acumula novas experiências profissionais, se conhece melhor e enfrenta diferentes desafios. Encare este resultado como um <strong style="color:#c8ff57;">ponto de partida para a reflexão</strong>, não como um rótulo fixo.</p>
+</div>
+
+<button class="btn-secondary" onclick="location.reload()">↺ Refazer o teste</button>
 </div>
 
 <script>
@@ -385,11 +390,12 @@ async function sendToSheet(results) {
     el.textContent='✅ Participação registrada com sucesso!';
   } catch(e) {
     el.className='send-status err';
-    el.textContent='❌ Erro ao registrar. Avise seu professor.';
+    el.textContent='❌ Erro ao registrar. Avise sua professora por e-mail.';
   }
 }
 </script>
 </body>
 </html>
+
 
 
