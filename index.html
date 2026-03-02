@@ -157,7 +157,40 @@
     </div>
   </div>
 
-  <button class="btn-primary" onclick="startQuiz()">COMEÇAR O TESTE →</button>
+<div style="background:#1c1c28;border:1px solid #2a2a3d;border-radius:16px;padding:24px;margin-bottom:24px;text-align:left;">
+  <p style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7c7c9a;margin-bottom:10px;">📋 Antes de começar</p>
+  <p style="font-size:14px;color:#a0a0c0;line-height:1.8;margin-bottom:20px;">Responda com a <strong style="color:#f0f0f8;">máxima sinceridade</strong> — lembre que não existe resposta certa ou errada. O que importa é o que você realmente sente e valoriza. Na dúvida, confie na sua primeira impressão.</p>
+
+  <p style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7c7c9a;margin-bottom:12px;">🔢 O que significa cada número?</p>
+  <div style="display:flex;flex-direction:column;gap:8px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="background:#c8ff57;color:#0e0e14;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</span>
+      <span style="font-size:13px;color:#a0a0c0;">Nunca é verdadeiro para mim — não me identifico nada com essa afirmação.</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="background:#a8d847;color:#0e0e14;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</span>
+      <span style="font-size:13px;color:#a0a0c0;">Raramente é verdadeiro — acontece muito pouco na minha vida.</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="background:#88b037;color:#0e0e14;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</span>
+      <span style="font-size:13px;color:#a0a0c0;">Às vezes é verdadeiro — me identifico um pouco, mas não sempre.</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="background:#689027;color:#f0f0f8;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</span>
+      <span style="font-size:13px;color:#a0a0c0;">Frequentemente é verdadeiro — me identifico bastante com essa afirmação.</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="background:#487010;color:#f0f0f8;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">5</span>
+      <span style="font-size:13px;color:#a0a0c0;">Quase sempre é verdadeiro — faz muito sentido para mim na maioria das vezes.</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="background:#2a5000;color:#c8ff57;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">6</span>
+      <span style="font-size:13px;color:#a0a0c0;">Sempre é verdadeiro — me identifico totalmente, descreve muito bem quem eu sou.</span>
+    </div>
+  </div>
+</div>
+
+<button class="btn-primary" onclick="startQuiz()">COMEÇAR O TESTE →</button>
 </div>
 
 <!-- ══ QUIZ ══ -->
@@ -395,6 +428,7 @@ async function sendToSheet(results) {
 </script>
 </body>
 </html>
+
 
 
 
