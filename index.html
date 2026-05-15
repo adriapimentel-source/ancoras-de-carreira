@@ -302,6 +302,17 @@
 <script>
 const APPS_SCRIPT_URL = "https://script.google.com/a/macros/fmm.org.br/s/AKfycbzGRposbIw38JfVmiNNmS1PCTk_PyioHp7AC8JBuz2krYJYJkFG-r9kRnTtdBROIKXL/exec";
 
+// 💾 NOVO: ao carregar a página, restaura dados do aluno nos campos
+window.addEventListener('DOMContentLoaded', () => {
+  const savedStudent = localStorage.getItem('ancora_student');
+  if (savedStudent) {
+    const s = JSON.parse(savedStudent);
+    document.getElementById('f-nome').value  = s.nome  || '';
+    document.getElementById('f-ra').value    = s.ra    || '';
+    document.getElementById('f-turma').value = s.turma || '';
+  }
+});
+  
 // ── TEMA ────────────────────────────────────────────────
 function toggleTheme() {
   const isLight = document.documentElement.getAttribute('data-theme') === 'light';
@@ -418,6 +429,9 @@ function pick(idx, val) {
   document.getElementById(`qcard${idx}`).classList.add('answered');
   updateProgress();
   document.getElementById('warn-msg').style.display = 'none';
+
+  // 💾 NOVO: salva progresso a cada resposta
+  localStorage.setItem('ancora_scores', JSON.stringify(scores));
 }
 
 function updateProgress() {
@@ -429,14 +443,36 @@ function updateProgress() {
 }
 
 function startQuiz() {
-  const nome=document.getElementById('f-nome').value.trim(),
-        ra=document.getElementById('f-ra').value.trim(),
-        turma=document.getElementById('f-turma').value;
-  if (!nome||!ra||!turma){alert('Preencha nome, RA e turma para continuar.');return;}
-  student={nome,ra,turma};
-  document.getElementById('landing').style.display='none';
-  document.getElementById('quiz-screen').style.display='block';
-  buildQuiz(); window.scrollTo(0,0);
+  const nome = document.getElementById('f-nome').value.trim(),
+        ra   = document.getElementById('f-ra').value.trim(),
+        turma = document.getElementById('f-turma').value;
+  if (!nome || !ra || !turma) { alert('Preencha nome, RA e turma para continuar.'); return; }
+  student = { nome, ra, turma };
+
+  // 💾 NOVO: salva dados do aluno
+  localStorage.setItem('ancora_student', JSON.stringify(student));
+
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  buildQuiz();
+
+  // 💾 NOVO: restaura respostas salvas, se houver
+  const savedScores = localStorage.getItem('ancora_scores');
+  if (savedScores) {
+    scores = JSON.parse(savedScores);
+    Object.entries(scores).forEach(([idx, val]) => {
+      // marca visualmente cada opção já respondida
+      document.querySelectorAll(`#opts${idx} .opt`).forEach((o, i) => {
+        const sel = i === val - 1;
+        o.classList.toggle('sel', sel);
+        o.setAttribute('aria-pressed', sel ? 'true' : 'false');
+      });
+      document.getElementById(`qcard${idx}`).classList.add('answered');
+    });
+    updateProgress();
+  }
+
+  window.scrollTo(0, 0);
 }
 
 function submitQuiz() {
@@ -455,6 +491,9 @@ function submitQuiz() {
 }
 
 function showResults() {
+    // 💾 NOVO: limpa cache após concluir
+  localStorage.removeItem('ancora_scores');
+  localStorage.removeItem('ancora_student');
   const sums={TF:0,GG:0,AI:0,SE:0,CE:0,SD:0,DP:0,EV:0};
   questions.forEach((q,i)=>{sums[q.cat]+=scores[i];});
   const results=Object.keys(sums).map(cat=>({cat,avg:+(sums[cat]/5).toFixed(2),...anchors[cat]})).sort((a,b)=>b.avg-a.avg);
